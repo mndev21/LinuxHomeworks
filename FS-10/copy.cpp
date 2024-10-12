@@ -28,48 +28,49 @@ int main(int argc, char** argv) {
     }
 
     off_t total_bytes = 0;
-    off_t data_bytes = 0;
-    off_t hole_bytes = 0;
+    off_t current = 0;
+    off_t file_size = lseek(src_fd, 0, SEEK_END);
+    off_t hole_count = 0, data_count = 0;
 
     char buffer[BUFFER_SIZE];
     size_t bytes_read;
-
-    while ((bytes_read = read(src_fd, buffer, BUFFER_SIZE)) > 0) {
-        total_bytes += bytes_read;
-
-        bool hole_detected = true;
-        for (ssize_t i = 0; i < bytes_read; ++i) {
-            if (buffer[i] != '\0') {
-                hole_detected = false;
-                break;
+    lseek(src_fd, -file_size, SEEK_END);
+    while (true) {
+	off_t data_start = lseek(src_fd, current, SEEK_DATA);
+        if (data_start == -1) {
+            perror("lseek (SEEK_DATA)");
+            return 1;
+        }
+	
+        off_t hole_start = lseek(src_fd, data_start, SEEK_HOLE);
+        if (hole_start == -1) {
+	    perror("lseek (SEEK_HOLE)");
+            return 1;       
+    	}
+	
+        data_count += hole_start - data_start;
+        if (hole_start < file_size) {
+            off_t next_data = lseek(src_fd, hole_start, SEEK_DATA);
+            if (next_data == -1) {
+               perror("lseek (SEEK_DATA after SEEK_HOLE)");
+               return 1;
             }
-        }
+       	    hole_count += next_data - hole_start;
+	    total_bytes += hole_count + data_count;
+       	    current = next_data;
+	    bytes_read = read(src_fd, buffer, total_bytes);
+	    write(dst_fd, buffer, total_bytes);
+   	 }
+	else {
+	   break;
+	}
 
-        if (hole_detected) {
-            hole_bytes += bytes_read;
-
-            lseek(dst_fd, bytes_read, SEEK_CUR);
-        }
-       	else {
-            size_t bytes_written = write(dst_fd, buffer, bytes_read);
-            if (bytes_written < 0) {
-                perror("Error writing to destination file");
-                close(src_fd);
-                close(dst_fd);
-                return errno;
-            }
-            data_bytes += bytes_written;
-        }
     }
-
-    if (bytes_read < 0) {
-        perror("Error reading source file");
-    }
-
+	
     close(src_fd);
     close(dst_fd);
 
-    std::cout << "Successfully copied " << total_bytes << " bytes (data: " << data_bytes << ", hole: " << hole_bytes << ").\n";
+    std::cout << "Successfully copied " << total_bytes << " bytes (data: " << (long long)data_count << ", hole: " << (long long)hole_count << ").\n";
 
     return 0;
 }
