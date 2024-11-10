@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="57549133-cd8b-414a-a041-2231d356f1b7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../FS-10/.copy.cpp.swp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FS-10/copy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../FS-10/copy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FS-10/destionation-file.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FS-11/dst-file.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../FS-11/dst-file.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../FS-11/src-file" beforeDir="false" afterPath="$PROJECT_DIR$/../FS-11/src-file" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PS-1/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../PS-1/main.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2024" />
+    <option name="minorVersion" value="2.2" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2ofHtFONe1r1XWxqd01p2C0imtQ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="57549133-cd8b-414a-a041-2231d356f1b7" name="Changes" comment="" />
+      <created>1731253922656</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731253922656</updated>
+      <workItem from="1731253923735" duration="16000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
