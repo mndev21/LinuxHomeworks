@@ -4,20 +4,20 @@
 
 pthread_mutex_t mtx;
 pthread_cond_t printer_cond;
-bool is_available = true;
+bool is_printer_in_use = false;
 
 void* printer(void* arg) {
 	const char* text = (const char*)arg;
 
 	pthread_mutex_lock(&mtx);
-	while (!is_available) {
+	while (is_printer_in_use) {
 		pthread_cond_wait(&printer_cond, &mtx);
 	}
 
-	is_available = false;
+	is_printer_in_use = true;
 	std::cout << text << '\n';
-	is_available = true;
-
+	
+	is_printer_in_use = false;
 	pthread_cond_signal(&printer_cond);
 	pthread_mutex_unlock(&mtx);
 
