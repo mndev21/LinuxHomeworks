@@ -4,10 +4,10 @@
 int main() {
     SharedArray array("sh_arr", 21);
 
-    sem_t* write_sem = sem_open("write", O_CREAT, 0666, 0);
-    sem_t* read_sem = sem_open("read", O_CREAT, 0666, 0);
+    sem_t* write_sem = sem_open("write", 0);
+    sem_t* read_sem = sem_open("read", 0);
 
-    if (write_sem == SEM_FAILED || read_sem == SEM_FAILED) {
+    if (write_sem == SEM_FAILED) {
         perror("sem_open");
         exit(errno);
     }
@@ -23,8 +23,6 @@ int main() {
 
         sem_post(write_sem);
         sleep(2);
-        sem_unlink("write");
-        sem_unlink("read");
     }
 
     sem_close(write_sem);
