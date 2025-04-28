@@ -2,7 +2,7 @@
 #include <iostream>
 
 int main() {
-    BankAPI::cleanup();
-    std::cout << "Bank destroyed successfully" << std::endl;
+    deinit_bank();
+    std::cout << "Bank destroyed\n";
     return 0;
 }
