@@ -2,7 +2,6 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <cstring>
 #include <sstream>
 #include <iostream>
 
@@ -80,7 +79,8 @@ void process_command() {
             else if (type == "max") std::cout << acc.max << std::endl;
             else std::cout << "invalid field" << std::endl;
         }
-    } else if (op == "freeze" || op == "thaw") {
+    }
+    else if (op == "freeze" || op == "thaw") {
         int id;
         iss >> id;
         if (id < 0 || id >= bank_ptr->size) std::cout << "invalid account" << std::endl;
@@ -88,14 +88,17 @@ void process_command() {
             bank_ptr->accounts[id].frozen = (op == "freeze");
             std::cout << "done" << std::endl;
         }
-    } else if (op == "transfer") {
+    }
+    else if (op == "transfer") {
         int from, to, x;
         iss >> from >> to >> x;
         if (from < 0 || from >= bank_ptr->size || to < 0 || to >= bank_ptr->size) {
             std::cout << "invalid account" << std::endl;
-        } else if (x <= 0) {
+        }
+        else if (x <= 0) {
             std::cout << "invalid amount" << std::endl;
-        } else {
+        }
+        else {
             Account& a = bank_ptr->accounts[from];
             Account& b = bank_ptr->accounts[to];
             if (a.frozen || b.frozen) std::cout << "account frozen" << std::endl;
@@ -106,7 +109,8 @@ void process_command() {
                 std::cout << "done" << std::endl;
             }
         }
-    } else if (op == "addall" || op == "suball") {
+    }
+    else if (op == "addall" || op == "suball") {
         int x;
         iss >> x;
         if (op == "suball") x = -x;
@@ -122,10 +126,12 @@ void process_command() {
             for (int i = 0; i < bank_ptr->size; ++i)
                 bank_ptr->accounts[i].current += x;
             std::cout << "done" << std::endl;
-        } else {
+        }
+        else {
             std::cout << "operation failed" << std::endl;
         }
-    } else if (op == "set") {
+    }
+    else if (op == "set") {
         std::string type;
         int id, x;
         iss >> type >> id >> x;
@@ -142,7 +148,8 @@ void process_command() {
             if (acc.current < acc.min || acc.current > acc.max) std::cout << "warning: current out of new limits" << std::endl;
             else std::cout << "done" << std::endl;
         }
-    } else {
+    }
+    else {
         std::cout << "unknown command" << std::endl;
     }
 
