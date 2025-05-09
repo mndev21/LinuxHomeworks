@@ -9,9 +9,12 @@ int main() {
 
     std::cout << "Bank client ready. Enter commands:\n";
 
+    std::string command;
     while (true) {
         std::cout << "> ";
-        process_command();  // теперь процессит напрямую
+        std::getline(std::cin, command);
+        if (command == "exit") break;
+        process_command(command);
     }
 
     detach_bank();

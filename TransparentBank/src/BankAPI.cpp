@@ -53,15 +53,13 @@ void detach_bank() {
     if (shm_fd != -1) close(shm_fd);
 }
 
-void process_command() {
+void process_command(const std::string& cmd) {
     if (!bank_ptr) {
         std::cout << "bank not initialized" << std::endl;
         return;
     }
 
-    std::string line;
-    std::getline(std::cin, line);
-    std::istringstream iss(line);
+    std::istringstream iss(cmd);
     std::string op;
     iss >> op;
 
