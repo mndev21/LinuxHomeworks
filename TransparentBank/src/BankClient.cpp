@@ -12,9 +12,11 @@ int main() {
     std::string command;
     while (true) {
         std::cout << "> ";
+        std::string recv;
         std::getline(std::cin, command);
         if (command == "exit") break;
-        process_command(command);
+        process_command(command, recv);
+        std::cout << recv << std::endl;
     }
 
     detach_bank();

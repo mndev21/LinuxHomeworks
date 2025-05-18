@@ -53,9 +53,24 @@ void detach_bank() {
     if (shm_fd != -1) close(shm_fd);
 }
 
-void process_command(const std::string& cmd) {
+void process_command(const std::string& cmd, std::string& recv) {
     if (!bank_ptr) {
-        std::cout << "bank not initialized" << std::endl;
+        recv = "bank not initialized";
+        return;
+    }
+
+    if (cmd == "help") {
+        recv =
+                "Available commands:\n"
+                "  help                             Show this help message\n"
+                "  get <field> <id>                 Get account field (field: current|min|max)\n"
+                "  set <field> <id> <value>         Set account min/max value\n"
+                "  freeze <id>                      Freeze an account\n"
+                "  thaw <id>                        Thaw (unfreeze) an account\n"
+                "  transfer <from> <to> <amount>    Transfer amount between accounts\n"
+                "  addall <value>                   Add value to all accounts\n"
+                "  suball <value>                   Subtract value from all accounts\n"
+                "  exit                             Exit the client\n";
         return;
     }
 
@@ -69,42 +84,43 @@ void process_command(const std::string& cmd) {
         std::string type;
         int id;
         iss >> type >> id;
-        if (id < 0 || id >= bank_ptr->size) std::cout << "invalid account" << std::endl;
+        id -= 1;
+        if (id < 0 || id >= bank_ptr->size) recv = "invalid account";
         else {
             Account& acc = bank_ptr->accounts[id];
-            if (type == "current") std::cout << acc.current << std::endl;
-            else if (type == "min") std::cout << acc.min << std::endl;
-            else if (type == "max") std::cout << acc.max << std::endl;
-            else std::cout << "invalid field" << std::endl;
+            if (type == "current") recv = std::to_string(acc.current);
+            else if (type == "min") recv = std::to_string(acc.min);
+            else if (type == "max") recv = std::to_string(acc.max);
+            else recv = "invalid field";
         }
     }
     else if (op == "freeze" || op == "thaw") {
         int id;
         iss >> id;
-        if (id < 0 || id >= bank_ptr->size) std::cout << "invalid account" << std::endl;
+        if (id < 0 || id >= bank_ptr->size) recv = "invalid account";
         else {
             bank_ptr->accounts[id].frozen = (op == "freeze");
-            std::cout << "done" << std::endl;
+            recv = "done";
         }
     }
     else if (op == "transfer") {
         int from, to, x;
         iss >> from >> to >> x;
         if (from < 0 || from >= bank_ptr->size || to < 0 || to >= bank_ptr->size) {
-            std::cout << "invalid account" << std::endl;
+            recv = "invalid account";
         }
         else if (x <= 0) {
-            std::cout << "invalid amount" << std::endl;
+            recv = "invalid amount";
         }
         else {
             Account& a = bank_ptr->accounts[from];
             Account& b = bank_ptr->accounts[to];
-            if (a.frozen || b.frozen) std::cout << "account frozen" << std::endl;
-            else if (a.current - x < a.min || b.current + x > b.max) std::cout << "limits exceeded" << std::endl;
+            if (a.frozen || b.frozen) recv = "accounts frozen";
+            else if (a.current - x < a.min || b.current + x > b.max) recv = "amount out of limits";
             else {
                 a.current -= x;
                 b.current += x;
-                std::cout << "done" << std::endl;
+                recv = "done";
             }
         }
     }
@@ -123,32 +139,32 @@ void process_command(const std::string& cmd) {
         if (ok) {
             for (int i = 0; i < bank_ptr->size; ++i)
                 bank_ptr->accounts[i].current += x;
-            std::cout << "done" << std::endl;
+            recv = "done";
         }
         else {
-            std::cout << "operation failed" << std::endl;
+            recv = "operation failed";
         }
     }
     else if (op == "set") {
         std::string type;
         int id, x;
         iss >> type >> id >> x;
-        if (id < 0 || id >= bank_ptr->size) std::cout << "invalid account" << std::endl;
+        if (id < 0 || id >= bank_ptr->size) recv = "invalid account";
         else {
             Account& acc = bank_ptr->accounts[id];
             if (type == "min") acc.min = x;
             else if (type == "max") acc.max = x;
             else {
-                std::cout << "invalid type" << std::endl;
+                recv = "invalid type";
                 pthread_mutex_unlock(&bank_ptr->mutex);
                 return;
             }
-            if (acc.current < acc.min || acc.current > acc.max) std::cout << "warning: current out of new limits" << std::endl;
-            else std::cout << "done" << std::endl;
+            if (acc.current < acc.min || acc.current > acc.max) recv = "warning: current out of new limits";
+            recv = "done";
         }
     }
     else {
-        std::cout << "unknown command" << std::endl;
+        recv = "unknown command";
     }
 
     pthread_mutex_unlock(&bank_ptr->mutex);

@@ -22,4 +22,4 @@ bool init_bank(int n);
 void deinit_bank();
 bool attach_bank();
 void detach_bank();
-void process_command(const std::string &command);
+void process_command(const std::string &command, std::string& recv);
