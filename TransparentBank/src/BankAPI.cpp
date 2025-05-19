@@ -70,7 +70,8 @@ void process_command(const std::string& cmd, std::string& recv) {
                 "  transfer <from> <to> <amount>    Transfer amount between accounts\n"
                 "  addall <value>                   Add value to all accounts\n"
                 "  suball <value>                   Subtract value from all accounts\n"
-                "  exit                             Exit the client\n";
+                "  exit                             Exit the client\n"
+                "  shutdown                         Shutdown the server\n";
         return;
     }
 
