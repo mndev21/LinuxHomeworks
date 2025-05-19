@@ -6,26 +6,23 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "../colorprint/colorprint.hpp" // Include path may vary
+#include "../colorprint/colorprint.hpp"
 
 constexpr int PORT = 8888;
 
 int main() {
     struct sockaddr_in server_address{};
 
-    // create a socket
     int client_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client_socket == -1) {
         perror("socket creation error");
         exit(errno);
     }
 
-    // fill the server ip and port address
     server_address.sin_addr.s_addr = inet_addr("127.0.0.1");
     server_address.sin_family = AF_INET;
     server_address.sin_port = htons(PORT);
 
-    // connect
     int connected = connect(client_socket, (struct sockaddr*) &server_address, sizeof(server_address));
 
     if(connected == -1){
@@ -35,7 +32,6 @@ int main() {
 
     std::cout << "Connected to bank server.\n";
 
-    // Set up colorprint
     std::vector<std::string> success = {"done", "good", "ok"};
     std::vector<std::string> failure = {"oops", "fail", "error", "bank not initialized", "invalid account", "operation failed",
                                         "invalid field", "invalid amount", "accounts frozen", "amount out of limits", "unknown command"};

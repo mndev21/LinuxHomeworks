@@ -97,6 +97,7 @@ void process_command(const std::string& cmd, std::string& recv) {
     else if (op == "freeze" || op == "thaw") {
         int id;
         iss >> id;
+        id -= 1;
         if (id < 0 || id >= bank_ptr->size) recv = "invalid account";
         else {
             bank_ptr->accounts[id].frozen = (op == "freeze");
@@ -106,6 +107,8 @@ void process_command(const std::string& cmd, std::string& recv) {
     else if (op == "transfer") {
         int from, to, x;
         iss >> from >> to >> x;
+        from -= 1;
+        to -= 1;
         if (from < 0 || from >= bank_ptr->size || to < 0 || to >= bank_ptr->size) {
             recv = "invalid account";
         }
@@ -149,6 +152,7 @@ void process_command(const std::string& cmd, std::string& recv) {
         std::string type;
         int id, x;
         iss >> type >> id >> x;
+        id -= 1;
         if (id < 0 || id >= bank_ptr->size) recv = "invalid account";
         else {
             Account& acc = bank_ptr->accounts[id];

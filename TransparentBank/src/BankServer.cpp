@@ -5,7 +5,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <iostream>
-#include <vector>
 
 constexpr int PORT = 8888;
 constexpr int MAX_CLIENTS = 10;
@@ -18,8 +17,16 @@ pthread_mutex_t clients_mutex = PTHREAD_MUTEX_INITIALIZER;
 int request_count = 0;
 bool server_running = true;
 
+struct ThreadArgs {
+    int client_sock;
+    int server_sock;
+};
+
 void* client_handler(void* arg) {
-    int client_sock = (int)(intptr_t)arg;
+    ThreadArgs* args = static_cast<ThreadArgs*>(arg);
+    int client_sock = args->client_sock;
+    int server_sock = args->server_sock;
+    delete args;
     char buffer[1024];
 
     while (true) {
@@ -36,9 +43,10 @@ void* client_handler(void* arg) {
 
         if (command == "shutdown") {
             server_running = false;
+
             close(client_sock);
-            break;
-            //exit(0);
+            close(server_sock);
+            exit(0);
         }
 
         std::string recv;
@@ -53,7 +61,6 @@ void* client_handler(void* arg) {
             break;
         }
 
-        // Увеличиваем счетчик и подаем сигнал
         pthread_mutex_lock(&counter_mutex);
         request_count++;
         if (request_count % 5 == 0) {
@@ -67,7 +74,6 @@ void* client_handler(void* arg) {
 }
 
 void* stats_printer(void* arg) {
-    (void)arg;
     while (server_running) {
         pthread_mutex_lock(&counter_mutex);
         pthread_cond_wait(&cond, &counter_mutex);
@@ -120,13 +126,13 @@ int main() {
             perror("accept");
             continue;
         }
-
+        ThreadArgs* args = new ThreadArgs{client_sock, server_sock};
         pthread_t tid;
-        if (pthread_create(&tid, nullptr, client_handler, (void*)(intptr_t)client_sock)) {
+        if (pthread_create(&tid, nullptr, client_handler, args)) {
             perror("pthread_create");
             close(client_sock);
         }
-        //pthread_detach(tid);
+        pthread_detach(tid);
     }
 
     close(server_sock);
